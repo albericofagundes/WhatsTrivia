@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Qual é a capital da França?",
+    "answer": "Paris"
+  },
+  {
+    "question": "Quantos elementos químicos existem na tabela periódica?",
+    "answer": "118"
+  },
+  {
+    "question": "Quem escreveu o livro 'O Pequeno Príncipe'?",
+    "answer": "Antoine de Saint-Exupéry"
+  },
+  {
+    "question": "Quem pintou a Mona Lisa?",
+    "answer": "Leonardo da Vinci"
+  },
+  {
+    "question": "Qual é a montanha mais alta do mundo?",
+    "answer": "Monte Everest"
+  },
+  {
+    "question": "Qual é o país com a maior população do mundo?",
+    "answer": "China"
+  },
+  {
+    "question": "Quem foi o primeiro presidente do Brasil?",
+    "answer": "Deodoro da Fonseca"
+  },
+  {
+    "question": "Qual é o nome do cachorro do Mickey Mouse?",
+    "answer": "Pluto"
+  },
+  {
+    "question": "Quem foi o primeiro astronauta a pisar na lua?",
+    "answer": "Neil Armstrong"
+  },
+  {
+    "question": "Qual é o maior deserto do mundo?",
+    "answer": "Deserto do Saara"
+  }
+]
