@@ -35,6 +35,7 @@ try {
 //   .catch((error) => {
 //     console.log("Error connecting to WhatsApp Business API", error);
 //   });
+let isGameRunning = false;
 
 function start(client) {
   let state = {
@@ -43,12 +44,92 @@ function start(client) {
     lastWinner: null,
   };
 
-  client.onAnyMessage((message) => {
-    if (message.body.toLowerCase() === "!trivia") {
+  function increment() {
+    state.currentIndex++;
+    console.log("userAnswer===answer");
+  }
+
+  const selectedQuestions = shuffle(questions).slice(0, 6);
+  let isGameRunning = false;
+
+  client.onAnyMessage(async (message) => {
+    const { question, answer } = selectedQuestions[state.currentIndex];
+    console.log("message", message.body);
+    console.log("state.currentIndex", state.currentIndex);
+
+    console.log("question", question);
+    console.log("answer", answer);
+
+    if (message.body === "!trivia" && !isGameRunning) {
+       isGameRunning = false;
+
+      // const { question } = selectedQuestions[state.currentIndex];
+
+      // console.log("answer", answer);
+
+      // const userAnswer = (await client.onMessage(message.from)).body;
+
+      await client.sendText(message.from, `${question}`);
+      // const userAnswer = (await client.onMessage(message.from));
+      //       console.log("userAnswer", userAnswer.body);
+
+      // isGameRunning = true;
+      // const userAnswer = client.onAnyMessage(message);
+      // console.log("userAnswer", userAnswer);
+
+      // for (let contact of message.chat.contacts) {
+      //   scores[contact.number] = 0;
+      // }
+
+      // for (let i = 0; i < selectedQuestions.length) {
+      //   // console.log("selectedQuestions[i]", selectedQuestions[i]);
+      //   const { question, answer } = selectedQuestions[i];
+
+      //   await client.sendText(message.from, `${question}`);
+      //   // Aguarde a resposta do usuário
+      //   const userAnswer = await client.onMessage(message.from);
+      //   console.log("userAnswer", userAnswer);
+      //   console.log("question", question);
+
+      //   if (userAnswer === answer) {
+      //     console.log("userAnswer", userAnswer);
+      //     console.log("answer", answer);
+      //     i++;
+      //   } else {
+      //     // client.sendText("errado");
+      //     console.log("userAnswer", userAnswer);
+      //     console.log("answer", answer);
+      //   }
+
+      //   // client.sendText(message.from, question);
+      //   // client.onMessage(async (message) => {
+      //   //   // const userAnswer = message.body.toLowerCase();
+
+      //   // });
+      // }
+
       // state.questions = questions;
-      const selectedQuestions = shuffle(questions).slice(0, 6);
-      console.log("selectedQuestions", selectedQuestions);
+
+      // const msg = selectedQuestions[state.currentIndex].question;
+      // const response = selectedQuestions[state.currentIndex].answer;
+      // console.log("msg", msg);
+
+      // client.sendText(
+      //   message.from,
+      //   `Olá! Vamos começar a trivia? A primeira pergunta é:\n\n` + msg
+      // );
+      // if (message.body.toLowerCase() === response) {
+      //   client.sendText(message.from, `Acertou Miseravel`);
+      // }
     }
+
+    if (message.body === answer && isGameRunning) {
+      console.log("userAnswer===answer");
+      increment();
+    }
+
+    // if (message.body.toLowerCase() === response) {
+    // }
   });
 
   // // estado atual do jogo
