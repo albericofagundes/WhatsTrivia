@@ -63,6 +63,7 @@ function start(client) {
     answers: [],
     currentIndex: 0,
     lastWinner: null,
+    selectedQuestions: [],
   };
 
   // console.log("function start(client)selectedQuestions", selectedQuestions);
@@ -79,25 +80,25 @@ function start(client) {
   //   await client.sendText(message.from, `${question}`);
   // }
 
-  async function startTriviaGame(isGameRunning, message) {
-    const selectedQuestions = shuffle(questions).slice(0, 6);
-    let { question, answer } = selectedQuestions[state.currentIndex];
-    console.log("startTriviaGame question", question);
-    console.log("startTriviaGame answer", answer);
-    console.log("startTriviaGame isGameRunning", isGameRunning);
-    console.log("startTriviaGame message.body", message.body);
-    try {
-      if (message.body === "!trivia" && isGameRunning == false) {
-        await client.sendText(message.from, `Trivia iniciado`);
-        await sleep(2000); // Delay de 3 segundos antes de mostrar a próxima pergunta
-        await client.sendText(message.from, `${question}`);
-        isGameRunning = true;
-        console.log("startTriviaGameAFTER isGameRunning", isGameRunning);
-      }
-    } catch (error) {
-      console.log("Error sending question:", error);
-    }
-  }
+  // async function startTriviaGame(isGameRunning, message) {
+  //   const selectedQuestions = shuffle(questions).slice(0, 6);
+  //   let { question, answer } = selectedQuestions[state.currentIndex];
+  //   console.log("startTriviaGame question", question);
+  //   console.log("startTriviaGame answer", answer);
+  //   console.log("startTriviaGame isGameRunning", isGameRunning);
+  //   console.log("startTriviaGame message.body", message.body);
+  //   try {
+  //     if (message.body === "!trivia" && isGameRunning == false) {
+  //       await client.sendText(message.from, `Trivia iniciado`);
+  //       await sleep(2000); // Delay de 3 segundos antes de mostrar a próxima pergunta
+  //       await client.sendText(message.from, `${question}`);
+  //       isGameRunning = true;
+  //       console.log("startTriviaGameAFTER isGameRunning", isGameRunning);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error sending question:", error);
+  //   }
+  // }
 
   async function processAnswer(client, message) {}
 
@@ -114,10 +115,10 @@ function start(client) {
     }
 
     if (message.body === "!trivia" && state.isGameRunning === false) {
-      const selectedQuestions = shuffle(questions).slice(0, 6);
-      console.log("selectedQuestions", selectedQuestions);
-      state.questions = selectedQuestions.map((q) => q.question);
-      state.answers = selectedQuestions.map((q) => q.answer);
+      state.selectedQuestions = shuffle(questions).slice(0, 6);
+      // console.log("selectedQuestions", selectedQuestions);
+      state.questions = state.selectedQuestions.map((q) => q.question);
+      state.answers = state.selectedQuestions.map((q) => q.answer);
 
       console.log("state.questions", state.questions);
       console.log("state.answers", state.answers);
@@ -136,6 +137,7 @@ function start(client) {
       // console.log("startTriviaGame message.body", message.body);
       console.log(state.questions[state.currentIndex]);
       console.log(state.answers[state.currentIndex]);
+
       state.isGameRunning = true;
     }
 
@@ -151,9 +153,42 @@ function start(client) {
       console.log("state.currentIndex", state.currentIndex);
       console.log("state.questions", state.questions[state.currentIndex]);
       console.log("state.answers", state.answers[state.currentIndex]);
-      let question = state.questions[state.currentIndex];
-      await client.sendText(message.from, `${question}`);
+      if (
+        !(state.currentIndex === state.selectedQuestions.length) &&
+        state.isGameRunning == true
+      ) {
+        let question = state.questions[state.currentIndex];
+        await client.sendText(message.from, `${question}`);
+
+        console.log("ainda nao terminou");
+        console.log("state.currentIndex", state.currentIndex);
+        console.log(
+          "state.selectedQuestions.length",
+          state.selectedQuestions.length
+        );
+      } else {
+        console.log("agora terminou");
+        await client.sendText(message.from, `Trivia finalizado`);
+        state.isGameRunning = false;
+      }
     }
+
+    // Verifica se todas as perguntas foram respondidas
+    // if (
+    //   state.currentIndex === state.selectedQuestions.length &&
+    //   state.isGameRunning == true
+    // ) {
+    //   console.log("agora terminou");
+    //   await client.sendText(message.from, `Trivia finalizado`);
+    //   state.isGameRunning = false;
+    // } else {
+    //   console.log("ainda nao terminou");
+    //   console.log("state.currentIndex", state.currentIndex);
+    //   console.log(
+    //     "state.selectedQuestions.length",
+    //     state.selectedQuestions.length
+    //   );
+    // }
 
     // if (message.body === "!trivia" && isGameRunning == false) {
     //   startTriviaGame(isGameRunning, message);
