@@ -977,7 +977,17 @@ const questions = [
 
 import { create } from "venom-bot";
 
-// let isGameRunning = false;
+function cleanString(string) {
+  // Remove os acentos
+  const textoSemAcentos = string
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  // Converte para caixa baixa
+  const textoSemAcentosCaixaBaixa = textoSemAcentos.toLowerCase();
+
+  return textoSemAcentosCaixaBaixa;
+}
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -1000,12 +1010,12 @@ function updateWinner(state, winnerName) {
 }
 
 async function sendQuestions(client, state, message) {
-  await sleep(1212); // Delay de 3 segundos antes de mostrar a próxima pergunta
+  await sleep(1212); // Delay de x segundos antes de mostrar a próxima pergunta
   let question = state.questions[state.currentIndex];
   await client.sendText(message.from, `${question}`);
 
-  console.log(state.questions[state.currentIndex]);
-  console.log(state.answers[state.currentIndex]);
+  // console.log(state.questions[state.currentIndex]);
+  // console.log(state.answers[state.currentIndex]);
 }
 
 async function startTriviardy(client, state, message) {
@@ -1013,32 +1023,33 @@ async function startTriviardy(client, state, message) {
   state.questions = state.selectedQuestions.map((q) => q.question);
   state.answers = state.selectedQuestions.map((q) => q.answer);
 
-  state.partialAnswers = state.selectedQuestions.flatMap((q) =>
-    q.partialAnswer.map((answer) => cleanString(answer))
-  );
+  state.fix_answers = state.selectedQuestions.map((q) => cleanString(q.answer));
 
-  console.log("state.questions", state.questions);
-  console.log("state.answers", state.answers);
-  console.log("state.partialAnswers ", state.partialAnswers);
+  // state.answers = state.selectedQuestions
+  // .filter((q) => q.answers) // Filtra apenas as perguntas que possuem respostas
+  // .flatMap((q) => q.answers.map((answer) => cleanString(answer)));
+
+  // state.answers = state.selectedQuestions.flatMap((q) =>
+  //   q.answers.map((answer) => cleanString(answer))
+  // );
+
+  // state.answers = state.selectedQuestions.flatMap((q) =>
+  //   q.answers ? q.answers.map((answer) => cleanString(answer)) : []
+  // );
+
+  console.log("state.questions", state.questions, "indice", state.currentIndex);
+  console.log("state.answers", state.answers, "indice", state.currentIndex);
+  console.log(
+    "state.fix_answers",
+    state.fix_answers,
+    "indice",
+    state.currentIndex
+  );
+  // console.log("state.partialAnswers ", state.partialAnswers);
 
   await client.sendText(message.from, `Trivia iniciado`);
   state.isGameRunning = true;
   sendQuestions(client, state, message);
-}
-
-// async function sendQuestion(isGameRunning, message, question, answer) {
-//   try {
-//     if (message.body === answer && isGameRunning) {
-//       await client.sendText(message.from, `Parabens, acertou`);
-//       console.log("userAnswer===answer");
-//     }
-//   } catch (error) {
-//     console.log("Error receveing question:", error);
-//   }
-// }
-
-function cleanString(string) {
-  return string;
 }
 
 const correctAnswerPromise = new Promise((resolve) => {
@@ -1087,6 +1098,7 @@ function start(client) {
     isGameRunning: false,
     questions: [],
     answers: [],
+    fix_answers: [],
     partialAnswers: [],
     currentIndex: 0,
     lastWinner: null,
@@ -1106,6 +1118,7 @@ function start(client) {
   // async function processAnswer(client, message) {}
 
   client.onAnyMessage(async (message) => {
+    let msg_body = cleanString(message.body);
     // console.log("onAnyMessage isGameRunning", state.isGameRunning);
     // console.log("message", message.body);
     // console.log("state.currentIndex", state.currentIndex);
@@ -1132,19 +1145,19 @@ function start(client) {
     }
 
     if (
-      message.body === state.partialAnswers[state.currentIndex] &&
+      msg_body === state.fix_answers[state.currentIndex] &&
       state.isGameRunning === true
     ) {
       const winnerName = message.sender.pushname;
-      await client.sendText(
-        message.from,
-        `Parabéns, ${winnerName}! Você acertou!`
-      );
+      // await client.sendText(
+      //   message.from,
+      //   `Parabéns, ${winnerName}! Você acertou!`
+      // );
       await client.sendText(
         message.from,
         `A resposta é:\n${
           state.answers[state.currentIndex]
-        }!\n${winnerName}! Você acertou!`
+        }!\nParabéns, ${winnerName}! Você acertou!`
       );
 
       updateWinner(state, winnerName);
@@ -1154,7 +1167,7 @@ function start(client) {
       state.currentIndex++;
       await sleep(1212); // Delay de 3 segundos antes de mostrar a próxima pergunta
 
-      startTriviardy(client, state, message);
+      sendQuestions(client, state, message);
 
       // console.log("state.currentIndex", state.currentIndex);
       // console.log("state.questions", state.questions[state.currentIndex]);
