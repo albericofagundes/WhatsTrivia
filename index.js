@@ -1044,6 +1044,7 @@ function start(client) {
     selectedQuestions: [],
     winners: {},
     isExpiredTime: false,
+    isAnswered: false,
   };
 
   // console.log("function start(client isGameRunning", isGameRunning);
@@ -1071,7 +1072,7 @@ function start(client) {
     isExpiredTime = false;
   }
 
-  async function endTrivia() {
+  async function endTrivia(message) {
     await client.sendText(message.from, `Trivia finalizado`);
 
     if (Object.keys(state.winners).length > 0) {
@@ -1087,14 +1088,24 @@ function start(client) {
     cleanStatus();
   }
 
-  async function correctAnswerRace(client, state, message) {
-    state.isExpiredTime = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 9999);
-    });
+  async function correctAnswerRace(client, state, message, startTemp) {
+    if (startTemp === true) {
+      state.isExpiredTime = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, 9999);
+      });
+    }
 
-    Promise.race([state.isExpiredTime])
+    if (startTemp === false) {
+      state.isExpiredTime = new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(false);
+        }, 0);
+      });
+    }
+
+    Promise.race([state.isExpiredTime, state.isAnswered])
       .then(async (result) => {
         if (result === true) {
           console.log("state.isExpiredTime", result);
@@ -1195,7 +1206,7 @@ function start(client) {
       state.currentIndex === state.selectedQuestions.length &&
       state.isGameRunning == true
     ) {
-      endTrivia();
+      endTrivia(message);
     } else {
       state.currentIndex++;
       console.log("state.currentIndex", state.currentIndex);
@@ -1237,11 +1248,13 @@ function start(client) {
       msg_body === state.fix_answers[state.currentIndex] &&
       state.isGameRunning === true
     ) {
-      state.isExpiredTime = new Promise((resolve) => {
-        // Simule a obtenção da resposta correta
-        resolve(false);
-      });
-      checkTrivia(message);
+      correctAnswerRace(client, state, message, false);
+
+      // state.isExpiredTime = new Promise((resolve) => {
+      //   // Simule a obtenção da resposta correta
+      //   resolve(false);
+      // });
+      // checkTrivia(message);
 
       // await client.sendText(
       //   message.from,
