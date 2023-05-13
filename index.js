@@ -1009,77 +1009,16 @@ function updateWinner(state, winnerName) {
   }
 }
 
-async function sendQuestions(client, state, message) {
-  await sleep(1212); // Delay de x segundos antes de mostrar a próxima pergunta
-  let question = state.questions[state.currentIndex];
-  await client.sendText(message.from, `${question}`);
+// const correctAnswerPromise = new Promise();
 
-  // console.log(state.questions[state.currentIndex]);
-  // console.log(state.answers[state.currentIndex]);
-}
-
-async function startTriviardy(client, state, message) {
-  state.selectedQuestions = shuffle(questions).slice(0, 6);
-  state.questions = state.selectedQuestions.map((q) => q.question);
-  state.answers = state.selectedQuestions.map((q) => q.answer);
-
-  state.fix_answers = state.selectedQuestions.map((q) => cleanString(q.answer));
-
-  // state.answers = state.selectedQuestions
-  // .filter((q) => q.answers) // Filtra apenas as perguntas que possuem respostas
-  // .flatMap((q) => q.answers.map((answer) => cleanString(answer)));
-
-  // state.answers = state.selectedQuestions.flatMap((q) =>
-  //   q.answers.map((answer) => cleanString(answer))
-  // );
-
-  // state.answers = state.selectedQuestions.flatMap((q) =>
-  //   q.answers ? q.answers.map((answer) => cleanString(answer)) : []
-  // );
-
-  console.log("state.questions", state.questions, "indice", state.currentIndex);
-  console.log("state.answers", state.answers, "indice", state.currentIndex);
-  console.log(
-    "state.fix_answers",
-    state.fix_answers,
-    "indice",
-    state.currentIndex
-  );
-  // console.log("state.partialAnswers ", state.partialAnswers);
-
-  await client.sendText(message.from, `Trivia iniciado`);
-  state.isGameRunning = true;
-  sendQuestions(client, state, message);
-}
-
-const correctAnswerPromise = new Promise((resolve) => {
-  // Simule a obtenção da resposta correta
-  setTimeout(() => {
-    resolve("Resposta correta");
-  }, 30000);
-});
+// const correctAnswerPromise = new Promise((resolve) => {
+//   // Simule a obtenção da resposta correta
+//   setTimeout(() => {
+//     resolve("tempo esgotado");
+//   }, 30000);
+// });
 
 // Aguardar resposta correta ou tempo expirado
-const answerPromise = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    reject("Tempo expirado");
-  }, 20000);
-});
-
-Promise.race([answerPromise, correctAnswerPromise])
-  .then((result) => {
-    console.log("result", result);
-    if (result === "Resposta correta") {
-      // A pessoa acertou a resposta dentro do tempo
-      console.log("Parabéns! Você acertou!");
-    } else {
-      // O tempo expirou
-      console.log("Tempo expirado. Tente novamente.");
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
 
 try {
   create({
@@ -1104,6 +1043,7 @@ function start(client) {
     lastWinner: null,
     selectedQuestions: [],
     winners: {},
+    isExpiredTime: false,
   };
 
   // console.log("function start(client isGameRunning", isGameRunning);
@@ -1116,6 +1056,155 @@ function start(client) {
   // }
 
   // async function processAnswer(client, message) {}
+
+  async function cleanStatus() {
+    state.isGameRunning = false;
+
+    questions = [];
+    answers = [];
+    fix_answers = [];
+    partialAnswers = [];
+    currentIndex = 0;
+    lastWinner = null;
+    selectedQuestions = [];
+    winners = {};
+    isExpiredTime = false;
+  }
+
+  async function endTrivia() {
+    await client.sendText(message.from, `Trivia finalizado`);
+
+    if (Object.keys(state.winners).length > 0) {
+      let winnersList = "Lista de Acertadores:\n";
+      for (const winner in state.winners) {
+        winnersList += `${winner}: ${state.winners[winner]} pontos\n`;
+      }
+      await client.sendText(message.from, winnersList);
+    } else {
+      await client.sendText(message.from, "Nenhum acertador nesta trivia.");
+    }
+
+    cleanStatus();
+  }
+
+  async function correctAnswerRace(client, state, message) {
+    state.isExpiredTime = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 9999);
+    });
+
+    Promise.race([state.isExpiredTime])
+      .then(async (result) => {
+        if (result === true) {
+          console.log("state.isExpiredTime", result);
+
+          // await client.sendText(
+          //   message.from,
+          //   `A resposta correta seria:\n${
+          //     state.answers[state.currentIndex]
+          //   }!\nTempo Expirado,\nNinguém pontuou,\nPróxima pergunta`
+          // );
+          await client.sendText(
+            message.from,
+            `A resposta correta seria:\n${
+              state.answers[state.currentIndex]
+            }!\nTempo Expirado,\nNinguém pontuou,\n`
+          );
+
+          checkTrivia(message);
+
+          // A pessoa acertou a resposta dentro do tempo
+        } else if (result === false) {
+          console.log("result", result);
+          const winnerName = message.sender.pushname;
+
+          await client.sendText(
+            message.from,
+            `A resposta é:\n${
+              state.answers[state.currentIndex]
+            }!\nParabéns, ${winnerName}! Você acertou!`
+          );
+
+          updateWinner(state, winnerName);
+
+          checkTrivia(message);
+
+          // state.currentIndex++;
+          // sendQuestions(client, state, message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  async function sendQuestions(client, state, message) {
+    await sleep(1212); // Delay de x segundos antes de mostrar a próxima pergunta
+    let question = state.questions[state.currentIndex];
+    await client.sendText(message.from, `${question}`);
+    correctAnswerRace(client, state, message);
+
+    // console.log(state.questions[state.currentIndex]);
+    // console.log(state.answers[state.currentIndex]);
+  }
+
+  async function startTriviardy(client, state, message) {
+    state.selectedQuestions = shuffle(questions).slice(0, 6);
+    state.questions = state.selectedQuestions.map((q) => q.question);
+    state.answers = state.selectedQuestions.map((q) => q.answer);
+
+    state.fix_answers = state.selectedQuestions.map((q) =>
+      cleanString(q.answer)
+    );
+
+    // state.answers = state.selectedQuestions
+    // .filter((q) => q.answers) // Filtra apenas as perguntas que possuem respostas
+    // .flatMap((q) => q.answers.map((answer) => cleanString(answer)));
+
+    // state.answers = state.selectedQuestions.flatMap((q) =>
+    //   q.answers.map((answer) => cleanString(answer))
+    // );
+
+    // state.answers = state.selectedQuestions.flatMap((q) =>
+    //   q.answers ? q.answers.map((answer) => cleanString(answer)) : []
+    // );
+
+    console.log(
+      "state.questions",
+      state.questions,
+      "indice",
+      state.currentIndex
+    );
+    console.log("state.answers", state.answers, "indice", state.currentIndex);
+    console.log(
+      "state.fix_answers",
+      state.fix_answers,
+      "indice",
+      state.currentIndex
+    );
+    // console.log("state.partialAnswers ", state.partialAnswers);
+
+    await client.sendText(message.from, `Trivia iniciado`);
+    state.isGameRunning = true;
+    sendQuestions(client, state, message);
+  }
+
+  async function checkTrivia(message) {
+    if (
+      state.currentIndex === state.selectedQuestions.length &&
+      state.isGameRunning == true
+    ) {
+      endTrivia();
+    } else {
+      state.currentIndex++;
+      console.log("state.currentIndex", state.currentIndex);
+
+      // const messageText = `Tempo Expirado,\nNinguém pontuou,\nPróxima pergunta`;
+      // await client.sendText(message.from, messageText);
+      sendQuestions(client, state, message);
+    }
+  }
 
   client.onAnyMessage(async (message) => {
     let msg_body = cleanString(message.body);
@@ -1148,59 +1237,51 @@ function start(client) {
       msg_body === state.fix_answers[state.currentIndex] &&
       state.isGameRunning === true
     ) {
-      const winnerName = message.sender.pushname;
+      state.isExpiredTime = new Promise((resolve) => {
+        // Simule a obtenção da resposta correta
+        resolve(false);
+      });
+      checkTrivia(message);
+
       // await client.sendText(
       //   message.from,
       //   `Parabéns, ${winnerName}! Você acertou!`
       // );
-      await client.sendText(
-        message.from,
-        `A resposta é:\n${
-          state.answers[state.currentIndex]
-        }!\nParabéns, ${winnerName}! Você acertou!`
-      );
-
-      updateWinner(state, winnerName);
 
       // await client.sendText(message.from, `acertou`);
-
-      state.currentIndex++;
-      await sleep(1212); // Delay de 3 segundos antes de mostrar a próxima pergunta
-
-      sendQuestions(client, state, message);
 
       // console.log("state.currentIndex", state.currentIndex);
       // console.log("state.questions", state.questions[state.currentIndex]);
       // console.log("state.answers", state.answers[state.currentIndex]);
-      if (
-        !(state.currentIndex === state.selectedQuestions.length) &&
-        state.isGameRunning == true
-      ) {
-        let question = state.questions[state.currentIndex];
-        await client.sendText(message.from, `${question}`);
+      // if (
+      //   !(state.currentIndex === state.selectedQuestions.length) &&
+      //   state.isGameRunning == true
+      // ) {
+      //   let question = state.questions[state.currentIndex];
+      //   await client.sendText(message.from, `${question}`);
 
-        console.log("ainda nao terminou");
-        console.log("state.currentIndex", state.currentIndex);
-        console.log(
-          "state.selectedQuestions.length",
-          state.selectedQuestions.length
-        );
-      } else {
-        console.log("agora terminou");
-        await client.sendText(message.from, `Trivia finalizado`);
+      //   console.log("ainda nao terminou");
+      //   console.log("state.currentIndex", state.currentIndex);
+      //   console.log(
+      //     "state.selectedQuestions.length",
+      //     state.selectedQuestions.length
+      //   );
+      // } else {
+      //   console.log("agora terminou");
+      //   await client.sendText(message.from, `Trivia finalizado`);
 
-        if (Object.keys(state.winners).length > 0) {
-          let winnersList = "Lista de Acertadores:\n";
-          for (const winner in state.winners) {
-            winnersList += `${winner}: ${state.winners[winner]} pontos\n`;
-          }
-          await client.sendText(message.from, winnersList);
-        } else {
-          await client.sendText(message.from, "Nenhum acertador nesta trivia.");
-        }
+      //   // if (Object.keys(state.winners).length > 0) {
+      //   //   let winnersList = "Lista de Acertadores:\n";
+      //   //   for (const winner in state.winners) {
+      //   //     winnersList += `${winner}: ${state.winners[winner]} pontos\n`;
+      //   //   }
+      //   //   await client.sendText(message.from, winnersList);
+      //   // } else {
+      //   //   await client.sendText(message.from, "Nenhum acertador nesta trivia.");
+      //   // }
 
-        state.isGameRunning = false;
-      }
+      //   state.isGameRunning = false;
+      // }
     }
   });
 }
