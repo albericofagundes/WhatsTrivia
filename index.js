@@ -232,7 +232,12 @@ function start(client) {
 
   async function correctAnswerRace(client, state, message, startTemp) {
     console.log("correctAnswerRace state.isGameRunning=>", state.isGameRunning);
-    if (state.isGameRunning === false) {
+
+    const isGameRunning = checkTrivia(client, state, message);
+    console.log("correctAnswerRace isGameRunning", isGameRunning);
+
+    if (isGameRunning === false) {
+      endTrivia(client, state, message);
       return;
     } else {
       if (startTemp === true) {
@@ -243,46 +248,51 @@ function start(client) {
         });
       }
 
-      // Aguarda a resposta correta ou a expiração do tempo
-      const result = await Promise.race([state.isExpiredTime, waitForAnswer()]);
+      try {
+        const result = await Promise.race([
+          state.isExpiredTime,
+          waitForAnswer(),
+        ]);
 
-      if (result === true) {
-        await client.sendText(
-          message.from,
-          `A resposta correta seria:\n${
-            state.answers[state.currentIndex]
-          }\nTempo expirado, ninguém pontuou.`
-        );
-      } else {
-        const winnerName = message.sender.pushname;
-
-        await client.sendText(
-          message.from,
-          `A resposta é:\n${
-            state.answers[state.currentIndex]
-          }\nParabéns, ${winnerName}! Você acertou!`
-        );
-
-        updateWinner(state, winnerName);
-      }
-
-      state.currentIndex++;
-      checkTrivia(client, state, message);
-
-      async function waitForAnswer() {
-        return new Promise((resolve) => {
-          client.onAnyMessage((msg) => {
-            const msg_body = cleanString(msg.body);
-            const expectedAnswer = cleanString(
+        if (result === true) {
+          await client.sendText(
+            message.from,
+            `A resposta correta seria:\n${
               state.answers[state.currentIndex]
-            );
+            }\nTempo expirado, ninguém pontuou.`
+          );
+        } else {
+          const winnerName = message.sender.pushname;
 
-            if (msg.from === message.from && msg_body === expectedAnswer) {
-              resolve(false); // A resposta está correta
-            }
-          });
-        });
+          await client.sendText(
+            message.from,
+            `A resposta é:\n${
+              state.answers[state.currentIndex]
+            }\nParabéns, ${winnerName}! Você acertou!`
+          );
+
+          updateWinner(state, winnerName);
+        }
+        state.currentIndex++;
+
+        checkTrivia(client, state, message);
+      } catch (error) {
+        // Lida com erros de forma apropriada
+        console.error("Erro:", error);
       }
+    }
+
+    function waitForAnswer() {
+      return new Promise((resolve) => {
+        client.onAnyMessage((msg) => {
+          const msg_body = cleanString(msg.body);
+          const expectedAnswer = cleanString(state.answers[state.currentIndex]);
+
+          if (msg.from === message.from && msg_body === expectedAnswer) {
+            resolve(false); // A resposta está correta
+          }
+        });
+      });
     }
   }
 
@@ -320,7 +330,6 @@ function start(client) {
     await sleep(1212); // Delay de x segundos antes de mostrar a próxima pergunta
     let question = state.questions[state.currentIndex];
     await client.sendText(message.from, `${question}`);
-    correctAnswerRace(client, state, message, true);
   }
 
   async function startTriviardy(client, state, message) {
@@ -352,25 +361,17 @@ function start(client) {
   }
 
   async function checkTrivia(client, state, message) {
-    if (
-      state.currentIndex >= state.selectedQuestions.length &&
-      state.isGameRunning == true
-    ) {
-      endTrivia(client, state, message);
+    if (state.currentIndex >= state.selectedQuestions.length) {
+      return false;
+      // endTrivia(client, state, message);
     }
-
-    // if (
-    //   state.currentIndex === state.selectedQuestions.length &&
-    //   state.isGameRunning == false
-    // ) {
-    //   endTrivia(client, state, message);
-    // }
 
     if (
       state.currentIndex < state.selectedQuestions.length &&
       state.isGameRunning == true
     ) {
       sendQuestions(client, state, message);
+      correctAnswerRace(client, state, message, true); // Chamada corrigida
     }
   }
 
