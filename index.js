@@ -1044,7 +1044,6 @@ function start(client) {
     selectedQuestions: [],
     winners: {},
     isExpiredTime: false,
-    isAnswered: false,
   };
 
   // console.log("function start(client isGameRunning", isGameRunning);
@@ -1060,14 +1059,11 @@ function start(client) {
 
   async function cleanStatus() {
     state.isGameRunning = false;
-
-    questions = [];
     answers = [];
     fix_answers = [];
     partialAnswers = [];
     currentIndex = 0;
     lastWinner = null;
-    selectedQuestions = [];
     winners = {};
     isExpiredTime = false;
   }
@@ -1097,15 +1093,7 @@ function start(client) {
       });
     }
 
-    if (startTemp === false) {
-      state.isExpiredTime = new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(false);
-        }, 0);
-      });
-    }
-
-    Promise.race([state.isExpiredTime, state.isAnswered])
+    Promise.race([state.isExpiredTime])
       .then(async (result) => {
         if (result === true) {
           console.log("state.isExpiredTime", result);
@@ -1248,6 +1236,12 @@ function start(client) {
       msg_body === state.fix_answers[state.currentIndex] &&
       state.isGameRunning === true
     ) {
+      console.log("msg_body", msg_body);
+      console.log(
+        "state.fix_answers[state.currentIndex]",
+        state.fix_answers[state.currentIndex]
+      );
+
       correctAnswerRace(client, state, message, false);
 
       // state.isExpiredTime = new Promise((resolve) => {
