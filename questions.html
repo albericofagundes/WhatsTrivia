@@ -1,0 +1,181 @@
+[ { "question": "Qual é a capital da França?", "answer": "Paris" }, {
+"question": "Quantos elementos químicos existem na tabela periódica?", "answer":
+"118" }, { "question": "Quem escreveu o livro 'O Pequeno Príncipe'?", "answer":
+"Antoine de Saint-Exupéry" }, { "question": "Quem pintou a Mona Lisa?",
+"answer": "Leonardo da Vinci" }, { "question": "Qual é a montanha mais alta do
+mundo?", "answer": "Monte Everest" }, { "question": "Qual é o país com a maior
+população do mundo?", "answer": "China" }, { "question": "Quem foi o primeiro
+presidente do Brasil?", "answer": "Deodoro da Fonseca" }, { "question": "Qual é
+o nome do cachorro do Mickey Mouse?", "answer": "Pluto" }, { "question": "Quem
+foi o primeiro astronauta a pisar na lua?", "answer": "Neil Armstrong" }, {
+"question": "Qual é o maior deserto do mundo?", "answer": "Deserto do Saara" } ]
+// import questions from "./questions.json?v=1" assert { type: "json" }; //
+const _questions = [ // { // question: "Qual é a capital da França?", // answer:
+"Paris", // partialAnswer: ["Paris"], // }, // { // question: "Quantos elementos
+químicos existem na tabela periódica?", // answer: "118", // partialAnswer:
+["118"], // }, // { // question: "Quem escreveu o livro 'O Pequeno Príncipe'?",
+// answer: "Antoine de Saint-Exupéry", // partialAnswer: // "Antoine de
+Saint-Exupéry" , "Antoine" , "Saint-Exupéry" , "Exupéry", // }, // { //
+question: "Quem pintou a Mona Lisa?", // answer: "Leonardo da Vinci", //
+partialAnswer: [ // "Leonardo da Vinci" , "Leonardo" , "da Vinci" , "daVinci",
+// ], // }, // { // question: "Qual é a montanha mais alta do mundo?", //
+answer: "Monte Everest", // partialAnswer: ["Monte Everest" , "Everest"], // },
+// { // question: "Qual é o país com a maior população do mundo?", // answer:
+"China", // partialAnswer: ["China"], // }, // { // question: "Quem foi o
+primeiro presidente do Brasil?", // answer: "Deodoro da Fonseca", //
+partialAnswer: ["Deodoro da Fonseca" , "Deodoro"], // }, // { // question: "Qual
+é o nome do cachorro do Mickey Mouse?", // answer: "Pluto", // partialAnswer:
+["Pluto" , "pluto"], // }, // { // question: "Quem foi o primeiro astronauta a
+pisar na lua?", // answer: "Neil Armstrong", // partialAnswer: ["Neil Armstrong"
+, "Armstrong"], // }, // { // question: "Qual é o maior deserto do mundo?", //
+answer: "Deserto do Saara", // partialAnswer: ["Deserto do Saara" , "Saara"], //
+}, // { // question: "Qual é o número atômico do carbono?", // answer: "6", //
+partialAnswer: ["6"], // }, // { // question: "Quem escreveu a obra 'Dom
+Quixote'?", // answer: "Miguel de Cervantes", // partialAnswer: ["Miguel de
+Cervantes" , "Cervantes"], // }, // { // question: "Quantos planetas fazem parte
+do sistema solar?", // answer: "8", // partialAnswer: ["8"], // }, // { //
+question: "Quem pintou a obra 'A Última Ceia'?", // answer: "Leonardo da Vinci",
+// partialAnswer: [ // "Leonardo da Vinci" , "Leonardo" , "da Vinci" ,
+"daVinci", // ], // }, // { // question: "Qual é o animal terrestre mais rápido
+do mundo?", // answer: "Guepardo", // partialAnswer: ["Guepardo" , "Chita"], //
+}, // { // question: "Qual é o maior oceano do mundo?", // answer: "Oceano
+Pacífico", // partialAnswer: ["Oceano Pacífico" , "Pacífico"], // }, // { //
+question: "Quem foi o inventor da lâmpada elétrica?", // answer: "Thomas
+Edison", // partialAnswer: ["Thomas Edison" , "Edison"], // }, // { // question:
+"Qual é o símbolo químico do ouro?", // answer: "Au", // partialAnswer: ["Au"],
+// }, // { // question: // "Quem foi o líder espiritual da Índia que lutou pela
+independência do país?", // answer: "Mahatma Gandhi" , "Gandhi", //
+partialAnswer: ["Saara"], // }, // { // question: "Qual é o maior planeta do
+sistema solar?", // answer: "Júpiter", // partialAnswer: ["Saara"], // }, // {
+// question: "Quantos ossos tem o corpo humano?", // answer: "206", //
+partialAnswer: ["Saara"], // }, // { // question: "Quem foi o fundador da
+Microsoft?", // answer: "Bill Gates" , "Gates", // partialAnswer: ["Saara"], //
+}, // { // question: "Qual é a capital da Rússia?", // answer: "Moscou", //
+partialAnswer: ["Saara"], // }, // { // question: "Quem foi o físico responsável
+pela Teoria da Relatividade?", // answer: "Albert Einstein" , "Einstein", //
+partialAnswer: ["Saara"], // }, // { // question: "Quantos estados têm os
+Estados Unidos da América?", // answer: "50", // partialAnswer: ["Saara"], // },
+// { // question: "Quem pintou a obra 'Guernica'?", // answer: "Pablo Picasso" ,
+"Picasso", // partialAnswer: ["Saara"], // }, // { // question: "Qual é o maior
+mamífero terrestre?", // answer: "Elefante africano" , "Elefante", //
+partialAnswer: ["Saara"], // }, // { // question: // "Qual é o nome do cientista
+que formulou a Teoria da Evolução das Espécies?", // answer: "Charles Darwin" ,
+"Darwin", // partialAnswer: ["Saara"], // }, // { // question: "Qual é o maior
+estado do Brasil em extensão territorial?", // answer: "Amazonas", //
+partialAnswer: ["Saara"], // }, // { // question: "Quem escreveu a peça teatral
+'Hamlet'?", // answer: "William Shakespeare" , "Shakespeare", // partialAnswer:
+["Saara"], // }, // { // question: "Qual é o símbolo químico do hidrogênio?", //
+answer: "H", // partialAnswer: ["Saara"], // }, // { // question: "Qual é o
+maior felino do mundo?", // answer: "Tigre", // partialAnswer: ["Saara"], // },
+// { // question: "Quantos continentes existem?", // answer: "7", //
+partialAnswer: ["Saara"], // }, // { // question: // "Qual é o nome do processo
+de conversão de uma substância do estado sólido para o gasoso?", // answer:
+"Sublimação", // partialAnswer: ["Saara"], // }, // { // question: "Quem pintou
+a obra 'A Noite Estrelada'?", // answer: "Vincent van Gogh" , "Van Gogh", //
+partialAnswer: ["Saara"], // }, // { // question: "Quem foi o líder sul-africano
+que lutou contra o apartheid?", // answer: "Nelson Mandela" , "Mandela", //
+partialAnswer: ["Saara"], // }, // { // question: "Qual é o maior rio do
+mundo?", // answer: "Rio Amazonas" , "Amazonas", // partialAnswer: ["Saara"], //
+}, // { // question: "Quem escreveu a obra '1984'?", // answer: "George Orwell"
+, "Orwell", // partialAnswer: ["Saara"], // }, // { // question: // "Qual é o
+nome do cientista que formulou a Teoria da Relatividade?", // answer: "Albert
+Einstein" , "Einstein", // partialAnswer: ["Saara"], // }, // { // question:
+"Qual é o maior produtor de café do mundo?", // answer: "Brasil", //
+partialAnswer: ["Saara"], // }, // { // question: // "Quem foi o líder pacifista
+e ativista dos direitos civis que lutou pela igualdade racial nos Estados
+Unidos?", // answer: "Martin Luther King Jr." , "Martin Luther King", //
+partialAnswer: ["Saara"], // }, // { // question: "Qual é o maior órgão interno
+do corpo humano?", // answer: "Fígado", // partialAnswer: ["Saara"], // }, // {
+// question: "Quem foi o cientista que formulou a Teoria da Gravidade?", //
+answer: "Isaac Newton" , "Newton", // partialAnswer: ["Saara"], // }, // { //
+question: "Qual é o número atômico do oxigênio?", // answer: "8", //
+partialAnswer: ["Saara"], // }, // { // question: "Quem escreveu o livro 'Crime
+e Castigo'?", // answer: "Fiódor Dostoiévski" , "Dostoiévski", // partialAnswer:
+["Saara"], // }, // { // question: "Quantos lados possui um heptágono?", //
+answer: "7", // partialAnswer: ["Saara"], // }, // { // question: "Qual é o
+maior arquipélago do mundo?", // answer: "Indonésia", // partialAnswer:
+["Saara"], // }, // { // question: // "Quem foi o líder político e militar
+responsável pela independência da Índia?", // answer: "Mahatma Gandhi" ,
+"Gandhi", // partialAnswer: ["Saara"], // }, // { // question: "Qual é o símbolo
+químico do sódio?", // answer: "Na", // partialAnswer: ["Saara"], // }, // { //
+question: "Quem escreveu a obra 'A Odisséia'?", // answer: "Homero", //
+partialAnswer: ["Saara"], // }, // { // question: "Qual é o maior órgão do
+sistema respiratório humano?", // answer: "Pulmões", // partialAnswer:
+["Saara"], // }, // { // question: "Quem foi o pintor espanhol famoso por suas
+obras surrealistas?", // answer: "Salvador Dalí" , "Dalí", // partialAnswer:
+["Saara"], // }, // { // question: "Quantos elementos fazem parte do horóscopo
+zodiacal?", // answer: "12", // partialAnswer: ["Saara"], // }, // { //
+question: "Qual é o maior estado do Brasil em população?", // answer: "São
+Paulo", // partialAnswer: ["Saara"], // }, // { // question: // "Quem foi o
+líder militar e imperador francês que conquistou grande parte da Europa?", //
+answer: "Napoleão Bonaparte" , "Napoleão" , "Bonaparte", // partialAnswer:
+["Saara"], // }, // { // question: "Qual é o maior osso do corpo humano?", //
+answer: "Fêmur", // partialAnswer: ["Saara"], // }, // { // question: "Quem foi
+o filósofo grego considerado o pai da Filosofia?", // answer: "Sócrates", //
+partialAnswer: ["Saara"], // }, // { // question: "Qual é a cidade mais populosa
+do mundo?", // answer: "Tóquio", // partialAnswer: ["Saara"], // }, // { //
+question: // "Quem foi o escritor brasileiro autor do livro 'Grande Sertão:
+Veredas'?", // answer: "João Guimarães Rosa" , "Guimarães Rosa", //
+partialAnswer: ["Saara"], // }, // { // question: // "Qual é o país que detém o
+recorde de maior número de Copas do Mundo conquistadas?", // answer: "Brasil",
+// partialAnswer: ["Saara"], // }, // { // question: "Quem foi o artilheiro da
+Copa do Mundo de 2018?", // answer: "Harry Kane" , "Kane", // partialAnswer:
+["Saara"], // }, // { // question: // "Qual é o jogador com o maior número de
+gols marcados na história do futebol?", // answer: "Pelé" , "Edson Arantes do
+Nascimento", // partialAnswer: ["Saara"], // }, // { // question: // "Qual é o
+clube brasileiro com mais títulos da Copa Libertadores da América?", // answer:
+"Club Atlético Independiente" , "Independiente", // partialAnswer: ["Saara"], //
+}, // { // question: "Qual é o jogador com mais Bolas de Ouro da FIFA?", //
+answer: "Lionel Messi" , "Messi", // partialAnswer: ["Saara"], // }, // { //
+question: "Qual seleção venceu a Copa do Mundo de 2014?", // answer: "Alemanha",
+// partialAnswer: ["Saara"], // }, // { // question: // "Quem é o jogador
+brasileiro recordista em número de partidas pela seleção?", // answer: "Cafu" ,
+"Marcos Evangelista de Morais", // partialAnswer: ["Saara"], // }, // { //
+question: "Qual é o estádio com maior capacidade do mundo?", // answer: "Estádio
+Rungnado May Day" , "Estádio Primeiro de Maio", // partialAnswer: ["Saara"], //
+}, // { // question: "Qual é o clube com mais títulos da Liga dos Campeões da
+UEFA?", // answer: "Real Madrid", // partialAnswer: ["Saara"], // }, // { //
+question: "Qual é o país que sediou a Copa do Mundo de 2018?", // answer:
+"Rússia", // partialAnswer: ["Saara"], // }, // { // question: "Quem é o técnico
+com mais títulos da Liga dos Campeões da UEFA?", // answer: "Zinedine Zidane" ,
+"Zidane", // partialAnswer: ["Saara"], // }, // { // question: "Qual é o jogador
+com mais títulos da Copa do Mundo?", // answer: "Pelé" , "Edson Arantes do
+Nascimento", // partialAnswer: ["Saara"], // }, // { // question: // "Qual é o
+clube brasileiro com mais títulos do Campeonato Brasileiro?", // answer: "São
+Paulo Futebol Clube" , "São Paulo", // partialAnswer: ["Saara"], // }, // { //
+question: // "Quem venceu o prêmio de Melhor Jogador do Mundo da FIFA em 2020?",
+// answer: "Robert Lewandowski" , "Lewandowski", // partialAnswer: ["Saara"], //
+}, // { // question: // "Qual é o jogador com mais gols marcados na história da
+Copa do Mundo?", // answer: "Marta" , "Marta Vieira da Silva", // partialAnswer:
+["Saara"], // }, // { // question: // "Qual é o país que detém o recorde de
+maior número de títulos da Copa América?", // answer: "Uruguai", //
+partialAnswer: ["Saara"], // }, // { // question: "Quem é o maior artilheiro da
+história do Campeonato Brasileiro?", // answer: "Roberto Dinamite" , "Dinamite",
+// partialAnswer: ["Saara"], // }, // { // question: // "Qual é o jogador com
+mais gols marcados em uma única edição da Copa do Mundo?", // answer: "Just
+Fontaine" , "Fontaine", // partialAnswer: ["Saara"], // }, // { // question:
+"Qual é o clube com mais títulos do Campeonato Espanhol?", // answer: "Real
+Madrid" , "Barcelona", // partialAnswer: ["Saara"], // }, // { // question:
+"Qual filme ganhou o Oscar de Melhor Filme em 2022?", // answer: "Duna" ,
+"Dune", // partialAnswer: ["Saara"], // }, // { // question: "Quem dirigiu o
+filme 'A Origem'?", // answer: "Christopher Nolan", // partialAnswer: ["Saara"],
+// }, // { // question: // "Qual é o filme com a maior bilheteria de animação de
+todos os tempos?", // answer: "Frozen 2" , "Frozen II", // partialAnswer:
+["Saara"], // }, // { // question: // "Qual ator interpretou o personagem Luke
+Skywalker na trilogia original de Star Wars?", // answer: "Mark Hamill", //
+partialAnswer: ["Saara"], // }, // { // question: // "Qual é o filme de Quentin
+Tarantino lançado em 1994 que se passa em Los Angeles e envolve diversas
+histórias interligadas?", // answer: "Pulp Fiction", // partialAnswer:
+["Saara"], // }, // { // question: // "Qual é o filme da Disney que conta a
+história de um leão chamado Simba?", // answer: "O Rei Leão" , "The Lion King",
+// partialAnswer: ["Saara"], // }, // { // question: // "Quem interpretou o
+personagem Wolverine nos filmes da franquia X-Men?", // answer: "Hugh Jackman",
+// partialAnswer: ["Saara"], // }, // { // question: // "Qual é o filme de
+Steven Spielberg lançado em 1993 que se passa em uma ilha onde dinossauros foram
+recriados geneticamente?", // answer: "Jurassic Park", // partialAnswer:
+["Saara"], // }, // { // question: // "Qual é o filme que conta a história de um
+jovem aspirante a músico chamado Miguel, que se aventura na Terra dos Mortos?",
+// answer: "Viva: A Vida é uma Festa" , "Coco", // partialAnswer: ["Saara"], //
+}, // { // question: // "Quem interpretou o personagem Capitão Jack Sparrow na
+franquia 'Piratas do Caribe'?", // answer: "Johnny Depp", // partialAnswer:
+["Saara"], // }, // ];
